@@ -1,0 +1,5 @@
+INSERT INTO authors  (name_author, surname_author )
+VALUES
+(  'matteo', 'aronica'),
+( 'riccardo', 'faraone'),
+('andrea', 'mineo');
