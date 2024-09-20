@@ -49,7 +49,7 @@ public class AuthorDaoJPA implements IDao<Author, Integer> {
 
         em.getTransaction().begin();
 
-        List<Author> authors = em.createQuery("SELECT a FROM Author a").getResultList();
+        List<Author> authors = em.createNativeQuery("SELECT * FROM authors ").getResultList();
 
         em.getTransaction().commit();
 

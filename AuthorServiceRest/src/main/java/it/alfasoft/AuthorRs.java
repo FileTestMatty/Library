@@ -1,23 +1,18 @@
 package it.alfasoft;
 
-import authorDao.Autore;
-import authorDao.GestioneAutori;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+//import javax.enterprise.context.ApplicationScoped;
+//import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/author")
-@ApplicationScoped
+//@ApplicationScoped
 public class AuthorRs {
 
-    @Inject
-    //private GestioneAutori ge;
-    private IDao<Autore,Integer> ge;
+
+    private AuthorDaoJPA ge =  new AuthorDaoJPA();
 
 
     @GET
@@ -26,7 +21,7 @@ public class AuthorRs {
 
         try {
 
-           List<Autore> list = ge.read(page, size);
+           List<Author> list = ge.read(page, size);
             return Response.ok(list).build();
 
         } catch ( Exception e ) {
@@ -42,7 +37,7 @@ public class AuthorRs {
 
         try {
             //Integer row = authorService.getIAuthorServirceImplPort().createAuthors(autore);
-            Autore autore = new Autore (nameAuthor, surnameAuthor);
+            Author autore = new Author (nameAuthor, surnameAuthor);
             Integer row = ge.create(autore);
             return Response.ok(row).build();
 
@@ -80,7 +75,7 @@ public class AuthorRs {
         try {
 
            // Autore autore = authorService.getIAuthorServirceImplPort().getById(id);
-            Autore autore = ge.getById(id);
+            Author autore = ge.getById(id);
             return Response.ok(autore).build();
 
         } catch ( Exception e ) {
@@ -99,8 +94,8 @@ public class AuthorRs {
         try {
 
             //List<Autore> list = authorService.getIAuthorServirceImplPort().find(autore);
-            Autore autore = new Autore(nameAuthor, surnameAuthor);
-            List<Autore> list = ge.find(autore);
+            Author autore = new Author(nameAuthor, surnameAuthor);
+            List<Author> list = ge.find(autore);
             return Response.ok(list).build();
 
         } catch ( Exception e ) {
@@ -113,7 +108,7 @@ public class AuthorRs {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateAuthor(Autore autore) {
+    public Response updateAuthor(Author autore) {
 
         try {
 

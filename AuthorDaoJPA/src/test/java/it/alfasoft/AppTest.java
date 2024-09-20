@@ -1,25 +1,54 @@
 package it.alfasoft;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 public class AppTest {
 
     private AuthorDaoJPA dao;
     private BookDAoJPA daoBook;
+    //private EntityManagerFactory emf;
+    private EntityManager em;
 
     @BeforeEach
     public void setup() {
 
         dao = new AuthorDaoJPA();
         daoBook = new BookDAoJPA();
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("Author");
+
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+        // Esegui lo script SQL
+        try (BufferedReader br = new BufferedReader(new FileReader("src/test/resources/META-INF/insert.sql"))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                em.createNativeQuery(line).executeUpdate();
+
+            }
+
+        } catch (IOException e) {
+
+            throw new RuntimeException(e);
+
+        }
+       em.getTransaction().commit();
+
+
 
     }
 
@@ -34,7 +63,7 @@ public class AppTest {
         Integer generatedId = dao.create(autore2);
 
 
-        Assertions.assertTrue(generatedId == 5, "errore create");
+        Assertions.assertTrue(generatedId == 6, "errore create");
 
     }
 
@@ -51,17 +80,17 @@ public class AppTest {
         Integer generatedId = daoBook.create(book);
 
 
-        Assertions.assertTrue(generatedId == 37, "errore create");
+        Assertions.assertTrue(generatedId == 6, "errore create");
 
     }
 
     @Test
     public void getByIDTest() throws DaoException {
 
-        Long l = new Long(6);
+        Long l = new Long(1);
         Author autoreActual = dao.findById(l);
 
-        Assertions.assertTrue(autoreActual.getId() == 6, "error getByID");
+        Assertions.assertTrue(autoreActual.getId() == 1, "error getByID");
     }
 
     @Test
@@ -81,7 +110,7 @@ public class AppTest {
         System.out.println("sono su get");
         List<Author> authors = dao.read(20, 0);
 
-        Assertions.assertTrue(authors.size() == 3, "La lista di autori non dovrebbe essere maggiore di 10");
+        Assertions.assertTrue(authors.size() == 5, "La lista di autori non dovrebbe essere maggiore di 10");
     }
 
     public void findByIdTest() throws DaoException {
